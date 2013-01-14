@@ -1,0 +1,138 @@
+<html>
+
+<head>
+    <title>Shop Google</title>
+</head>
+
+<script id="googlecart-script" type="text/javascript"
+  src="http://checkout.google.com/seller/gsc/v2/cart.js?mid=801947958809860"
+  currency="USD"
+  post-cart-to-sandbox="true">
+</script>
+
+<script type="text/javascript">
+
+JSONscriptRequest.scriptCounter = 1;
+
+function JSONscriptRequest(fullUrl) {
+    this.fullUrl = fullUrl; 
+    
+    // Keep IE from caching requests
+    this.noCacheIE = '&noCacheIE=' + (new Date()).getTime();
+    
+    this.headLoc = document.getElementsByTagName("head").item(0);
+    this.scriptId = 'JscriptId' + JSONscriptRequest.scriptCounter++;
+}
+
+JSONscriptRequest.prototype.buildScriptTag = function () {
+    this.scriptObj = document.createElement("script");    
+    this.scriptObj.setAttribute("type", "text/javascript");
+    this.scriptObj.setAttribute("charset", "utf-8");
+    this.scriptObj.setAttribute("src", this.fullUrl + this.noCacheIE);
+    this.scriptObj.setAttribute("id", this.scriptId);
+}
+ 
+JSONscriptRequest.prototype.removeScriptTag = function () {
+    this.headLoc.removeChild(this.scriptObj);  
+}
+
+JSONscriptRequest.prototype.addScriptTag = function () {
+    this.headLoc.appendChild(this.scriptObj);
+}
+
+function ws_results(obj) {   
+    if (obj) {
+        var items = obj.items;
+        
+        for (var i=0; i < 4; i++)
+        {
+            var item = items[i];            
+            
+            if (item) {
+                document.getElementById("searchResultsTitle" + i).innerHTML=item.product.title;
+                document.getElementById("searchResultsLink" + i).innerHTML="<a href=" + item.product.link + " target='_blank'>" + items[i].product.author.name + "</a>";
+                document.getElementById("searchResultsPrice" + i).innerHTML="Price: $" + item.product.inventories[0].price; 
+                document.getElementById("searchResultsImg" + i).innerHTML="<img width=150 src=" + item.product.images[0].link + "></img>";
+                
+                var addToCartElement = document.getElementById("addtocart" + i);
+                var vis = addToCartElement.style;
+                vis.display ="block";                
+            }
+        }         
+    }
+}
+   
+function searchGoogleShopping() {
+    var product = document.getElementById("searchInput").value;     
+    product = product.replace(' ', '+');
+    var request = "https://www.googleapis.com/shopping/search/v1/public/products?key=AIzaSyBphzE4SvXG75SY5aPoQBHQrkRZY1YYNBM&country=US&q=" + product + "&callback=ws_results"
+    aObj = new JSONscriptRequest(request);
+    aObj.buildScriptTag();
+    aObj.addScriptTag();
+}
+
+</script>
+
+<body>
+
+<style>
+  .product-image { border:none }
+  .searchtext { font-weight:bold; font-size:20px; font-family:Arial }  
+  .product-title { font-weight:bold; font-size:12px; font-family:Arial }
+  .product-price, .product-shipping, .product-link { font-weight:normal; font-size:12px; font-family:Arial }
+  .align-cart { padding-left:100px}
+</style>
+
+<table cellpadding="10" width="100%">
+<tr>
+<th height="100px" colspan="4"><img src="googlelogo.jpeg"/> <img src="shop.jpeg"/></th>
+</tr>
+
+<tr>
+<th height="100px" colspan="4">
+<div class="searchtext">What do you wish for?&nbsp;&nbsp;<input type="text" size=40 id="searchInput" onkeydown="if (event.keyCode == 13) searchGoogleShopping()"/>
+<input value="Search" onclick="searchGoogleShopping()" type="button"></div>
+</th>
+
+</tr>
+  <tr>
+    <td><div class="product-image" id="searchResultsImg0"/></td>
+    <td class="product">
+      <div class="product-title" id="searchResultsTitle0"></div>
+      <div class="product-price" id="searchResultsPrice0"></div><br/>
+      <div class="product-link" id="searchResultsLink0"></div><br/>
+      <div id="addtocart0" role="button" style={ visibility: hidden } alt="Add to cart" tabindex="0" class="googlecart-add-button"></div>
+    </td>
+    <td ><div class="product-image" id="searchResultsImg1"/></td>
+    <td class="product">
+      <div class="product-title" id="searchResultsTitle1"></div>
+      <div class="product-price" id="searchResultsPrice1"></div><br/>
+      <div class="product-link" id="searchResultsLink1"></div><br/>
+      <div id="addtocart1" role="button" style={ visibility: hidden } alt="Add to cart" tabindex="0" class="googlecart-add-button"></div>
+    </td>
+    <td align="top">
+    <div id="googlecart-widget" class="align-cart"></div>
+    </td>
+    </tr>
+    <tr>
+    <td><div class="product-image" id="searchResultsImg2"/></td>
+    <td class="product">
+      <div class="product-title" id="searchResultsTitle2"></div>
+      <div class="product-price" id="searchResultsPrice2"></div><br/>
+      <div class="product-link" id="searchResultsLink2"></div><br/>
+      <div id="addtocart2" role="button" style={ visibility: hidden } alt="Add to cart" tabindex="0" class="googlecart-add-button"></div>
+    </td>
+    <td><div class="product-image" id="searchResultsImg3"/></td>
+    <td class="product">
+      <div class="product-title" id="searchResultsTitle3"></div>
+      <div class="product-price" id="searchResultsPrice3"></div><br/>
+      <div class="product-link" id="searchResultsLink3"></div><br/>
+      <div id="addtocart3" role="button" style={ visibility: hidden } alt="Add to cart" tabindex="0" class="googlecart-add-button"></div>
+    </td>
+    </tr>
+  </tr>
+</table>
+
+</body>
+</html>
+
